@@ -2,9 +2,9 @@ package client
 
 import java.io.File
 
-import akka.actor.{ActorSystem, Props, ActorRef}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import com.typesafe.config.ConfigFactory
-import message.SearchRequest
+import message.{OrderRequest, SearchRequest, StreamRequest}
 
 import scala.io.StdIn.readLine
 import scala.util.control.Breaks._
@@ -24,9 +24,9 @@ object Client{
       while (true) {
         var data: String = readLine()
         data match {
-          case req if data.startsWith("search") => clientActor.tell(SearchRequest(data.split(" ")(1)), ActorRef.noSender)
-          case req if data.startsWith("order") => println("order")
-          case req if data.startsWith("stream") => println("stream")
+          case req if data.startsWith("search") => clientActor ! SearchRequest(data.split(" ")(1))
+          case req if data.startsWith("order") => clientActor ! OrderRequest(data.split(" ")(1))
+          case req if data.startsWith("stream") => clientActor ! StreamRequest(data.split(" ")(1))
           case "q" => break
           case _ => println("Unrecognized command")
         }

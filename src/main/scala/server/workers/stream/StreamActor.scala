@@ -1,5 +1,8 @@
 package server.workers.stream
 
-class StreamActor {
+import akka.actor.Actor
 
+class StreamActor extends Actor{
+
+  override def receive: Receive = ???
 }

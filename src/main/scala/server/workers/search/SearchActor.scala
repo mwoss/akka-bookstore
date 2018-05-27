@@ -21,21 +21,22 @@ class SearchActor extends Actor {
       val index = hash.getAndIncrement()
       status.insert(index, false)
       previous.insert(index, false)
-      dbSearchActor1 ! FindBookRequest(bookTitle, 1, sender, index)
-      dbSearchActor2 ! FindBookRequest(bookTitle, 2, sender, index)
+      dbSearchActor1.tell(FindBookRequest(bookTitle, 1, index), sender)
+      dbSearchActor2.tell(FindBookRequest(bookTitle, 2, index), sender)
+
     case response: SearchResponse =>
       if(!status(response.hash))
         status(response.hash) = true
       else{
         response match {
-          case SearchResponsePositive(bookTitle, price, senderPID, hash) =>
+          case SearchResponsePositive(bookTitle, price, hash) =>
             if (status(hash)) {
               previous(hash) = true
-              senderPID ! BookFound(bookTitle, price)
+              sender ! BookFound(bookTitle, price)
             }
-          case SearchResponseNegative(senderPID, hash) =>
+          case SearchResponseNegative(hash) =>
             if (status(hash) && !previous(hash))
-              senderPID ! BookNotFound
+              sender ! BookNotFound
         }
       }
 

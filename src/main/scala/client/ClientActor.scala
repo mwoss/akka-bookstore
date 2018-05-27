@@ -12,8 +12,14 @@ class ClientActor extends Actor {
 
   override def receive: Receive = {
     case request: SearchRequest => server.tell(request, self)
+    case request: OrderRequest => server.tell(request, self)
+    case request: StreamRequest => server.tell(request, self)
+
     case BookFound(bookTitle, price) => println(s"Book found in db. Title: $bookTitle, price: $price")
     case BookNotFound => println("Book wasn't found in db.")
+    case OrderFailure => println("Order cannot be completed. No such book in store.")
+    case OrderSuccess(bookTitle) => println(s"You order $bookTitle has been successfully added to order database.")
+
     case _ => println("Received unknown message")
   }
 }
