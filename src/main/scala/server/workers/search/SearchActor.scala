@@ -2,9 +2,11 @@ package server.workers.search
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.SupervisorStrategy.Restart
+import akka.actor.{Actor, OneForOneStrategy, Props, SupervisorStrategy}
 import akka.event.Logging
 import message._
+import scala.concurrent.duration._
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -43,5 +45,10 @@ class SearchActor extends Actor {
         }
       }
 
+  }
+  override def supervisorStrategy: SupervisorStrategy = {
+    OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 1 minute) {
+      case _: Exception => Restart
+    }
   }
 }
