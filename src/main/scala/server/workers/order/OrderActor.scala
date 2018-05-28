@@ -1,5 +1,8 @@
 package server.workers.order
 
+import java.io.{File, FileWriter}
+import java.nio.file.Paths
+
 import akka.pattern.ask
 import akka.actor.{Actor, Props}
 import akka.util.Timeout
@@ -16,8 +19,7 @@ class OrderActor extends Actor {
   private implicit val executionContext: ExecutionContextExecutor = context.system.dispatcher
 
   val searchActor = context.actorSelection("/user/store_actor/search_actor")
-  val writeActor = context.actorOf(Props[WriteActor], "write_actor")
-
+  val orderPath = "./src/main/resources/orders"
 
   override def receive: Receive = {
     case request: OrderRequest =>
@@ -25,7 +27,11 @@ class OrderActor extends Actor {
       searchActor.ask(SearchRequest(request.bookTitle)).onComplete {
         case Success(status) =>
           status match {
-            case BookFound(bookTitle, _) => writeActor.tell(WriteOrderRequest(bookTitle), client)
+            case BookFound(bookTitle, _) =>
+              val orders = new FileWriter(new File(Paths.get(orderPath).toUri),true)
+              orders.append(bookTitle + "\n")
+              orders.close()
+              client ! OrderSuccess(bookTitle)
             case BookNotFound => client ! OrderFailure
           }
         case Failure(_) => client ! OrderFailure
