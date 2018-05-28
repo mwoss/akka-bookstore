@@ -19,6 +19,7 @@ class ClientActor extends Actor {
     case BookNotFound => println("Book wasn't found in db.")
     case OrderFailure => println("Order cannot be completed. No such book in store.")
     case OrderSuccess(bookTitle) => println(s"You order $bookTitle has been successfully added to order database.")
+    case StreamResponse(text) => println(text)
 
     case _ => println("Received unknown message")
   }

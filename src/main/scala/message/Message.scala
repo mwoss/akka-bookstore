@@ -20,3 +20,5 @@ case class BookNotFound() extends Serializable
 
 case class OrderSuccess(bookTitle: String) extends Serializable
 case class OrderFailure() extends Serializable
+
+case class StreamResponse(text: String) extends Serializable
