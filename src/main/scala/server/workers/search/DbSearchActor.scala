@@ -1,12 +1,16 @@
 package server.workers.search
 
 import java.io.File
+
 import akka.actor.Actor
+import akka.event.Logging
 import message.{FindBookRequest, SearchResponseNegative, SearchResponsePositive}
 
 import scala.io.Source
 
 class DbSearchActor extends Actor {
+
+  val logger = Logging(context.system, this)
 
   override def receive: Receive = {
     case FindBookRequest(bookTitle, dbID, hash) =>

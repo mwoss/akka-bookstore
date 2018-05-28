@@ -3,11 +3,14 @@ package server.workers.search
 import java.util.concurrent.atomic.AtomicInteger
 
 import akka.actor.{Actor, ActorRef, Props}
+import akka.event.Logging
 import message._
 
-import scala.collection.mutable.{ArrayBuffer}
+import scala.collection.mutable.ArrayBuffer
 
 class SearchActor extends Actor {
+
+  val logger = Logging(context.system, this)
 
   val dbSearchActor1 = context.actorOf(Props[DbSearchActor], "db_search_actor_1")
   val dbSearchActor2 = context.actorOf(Props[DbSearchActor], "db_search_actor_2")

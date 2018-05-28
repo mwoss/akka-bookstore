@@ -5,6 +5,7 @@ import java.nio.file.Paths
 
 import akka.pattern.ask
 import akka.actor.{Actor, Props}
+import akka.event.Logging
 import akka.util.Timeout
 
 import scala.concurrent.duration._
@@ -14,6 +15,8 @@ import message._
 import scala.concurrent.ExecutionContextExecutor
 
 class OrderActor extends Actor {
+
+  val logger = Logging(context.system, this)
 
   implicit val duration: Timeout = 10 seconds
   private implicit val executionContext: ExecutionContextExecutor = context.system.dispatcher

@@ -3,6 +3,7 @@ package server.workers.stream
 import java.io.File
 
 import akka.actor.Actor
+import akka.event.Logging
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
@@ -14,6 +15,8 @@ import scala.util.{Failure, Success}
 import scala.concurrent.duration._
 
 class StreamActor extends Actor {
+
+  val logger = Logging(context.system, this)
 
   implicit val duration: Timeout = 10 seconds
   private implicit val executionContext: ExecutionContextExecutor = context.system.dispatcher
